@@ -46,7 +46,7 @@ class SandSim:
     
     def poll_events(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 self.running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
@@ -61,7 +61,7 @@ class SandSim:
                     self.speed = min(self.speed, 120)
                 if event.button == 5: #scroll down
                     self.speed -= 1
-                    self.speed = max(self.speed, 0)
+                    self.speed = max(self.speed, 1)
 
         if pygame.mouse.get_pressed()[0]:
             x = int(pygame.mouse.get_pos()[0] / self.sand_size)
