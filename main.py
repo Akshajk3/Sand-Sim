@@ -14,6 +14,8 @@ class SandSim:
         self.grid = [[0 for _ in range(self.width)] for _ in range(self.height)]
         self.sand_size = 5
         self.running = True
+        self.paused = False
+        self.speed = 60
         self.clock = pygame.time.Clock()
         self.display = pygame.display.set_mode(((800, 800)))
         pygame.display.set_caption("Sand Sim")
@@ -49,6 +51,17 @@ class SandSim:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     self.reset_grid()
+                if event.key == pygame.K_SPACE:
+                    self.paused = not self.paused
+                if event.key == pygame.K_f:
+                    self.fill_grid()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 4: #scroll up
+                    self.speed += 1
+                    self.speed = min(self.speed, 120)
+                if event.button == 5: #scroll down
+                    self.speed -= 1
+                    self.speed = max(self.speed, 0)
 
         if pygame.mouse.get_pressed()[0]:
             x = int(pygame.mouse.get_pos()[0] / self.sand_size)
@@ -73,6 +86,10 @@ class SandSim:
     def remove_sand(self, x, y):
         self.grid[x][y] = 0
 
+    def fill_grid(self):
+        self.prev_grid = [[1 for _ in range(self.width)] for _ in range(self.height)]
+        self.grid = [[1 for _ in range(self.width)] for _ in range(self.height)]
+
     def reset_grid(self):
         self.prev_grid = [[0 for _ in range(self.width)] for _ in range(self.height)]
         self.grid = [[0 for _ in range(self.width)] for _ in range(self.height)]
@@ -80,15 +97,16 @@ class SandSim:
     def update(self):
         while self.running:
             self.display.fill((0, 0, 0))
-            self.update_sand()
+            if not self.paused:
+                self.update_sand()
             self.poll_events()
             self.draw()
 
             fps = round(self.clock.get_fps())
-            pygame.display.set_caption(f"Sand Sim - FPS: {fps}")
+            pygame.display.set_caption(f"Sand Sim - Current Speed: {self.speed}")
 
             pygame.display.flip()
-            self.clock.tick(60)
+            self.clock.tick(self.speed)
 
 if __name__ == "__main__":
     sim = SandSim()
