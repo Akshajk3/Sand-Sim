@@ -20,3 +20,6 @@ Fill Sand
 
 R:
 Clear Sand
+
+Space:
+Pause/Unpause
